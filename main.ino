@@ -1,6 +1,6 @@
 #include "stepper.h"
 
-Stepper Right(0, 1, 2), Left(3, 4, 5), Front(6, 7, 8), Back(9, 10, 11), RightLeft(51, 52, 53), FrontBack(47, 48, 49);
+Stepper Right(16, 15, 14), Left(3, 4, 5), Front(6, 7, 8), Back(9, 10, 11), RightLeft(51, 52, 53), FrontBack(47, 48, 49);
 #define delta 6 * 180
 
 enum AXIS {
@@ -14,7 +14,7 @@ void rotateAxis(int type, int rolation)
   Stepper *p;
   switch(type) {
     case RL:
-        p = &FrontBack;
+        p = &RightLeft;
         stepPinA = Right.getStepPin();
         stepPinB = Left.getStepPin();
 
@@ -22,7 +22,7 @@ void rotateAxis(int type, int rolation)
         dirPinB = Left.getDirPin();
         break;
     case FB:
-        p = &RightLeft;
+        p = &FrontBack;
         stepPinA = Front.getStepPin();
         stepPinB = Back.getStepPin();
 
@@ -147,6 +147,7 @@ void solve(String s)
 
 void setup()
 {
+  Serial.begin(9600);
   delay(5000);
   RightLeft.startup();
   RightLeft.setRotateSpeed(60);
@@ -186,7 +187,12 @@ void loop()
 //  delay(500);
   String data;
   data = Serial.readString();
+  Serial.println(data);
+  if(data == "") {
+    return;
+  }
   if(data == "DF" || data == "DU" || data == "DB" || data == "DD") {
+    Serial.println("case 1");
     rotateAxis(RL, 90);
     return;
   }
